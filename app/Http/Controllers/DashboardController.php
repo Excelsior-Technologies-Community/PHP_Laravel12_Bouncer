@@ -13,6 +13,7 @@ class DashboardController extends Controller
             'totalUsers' => User::count(),
             'totalRoles' => Bouncer::role()->count(),
             'totalPermissions' => Bouncer::ability()->count(),
+            'recentUsers' => User::oldest()->paginate(3),
         ]);
     }
 }

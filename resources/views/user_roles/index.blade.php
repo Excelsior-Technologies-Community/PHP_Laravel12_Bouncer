@@ -24,6 +24,25 @@
                     </p>
                 </div>
 
+                <form method="GET" action="{{ route('user.roles') }}" class="mb-4">
+                    <div class="flex gap-2">
+
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            placeholder="Search user by name or email..."
+                            class="border border-gray-300 rounded-lg px-4 py-2 w-full">
+
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                            Search
+                        </button>
+
+                        <a href="{{ route('user.roles') }}"
+                            class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
+                            Reset
+                        </a>
+
+                    </div>
+                </form>
+
                 <!-- TABLE -->
                 <div class="overflow-x-auto">
 
@@ -74,14 +93,14 @@
                                     <td class="p-4">
 
                                         <form method="POST" action="{{ route('user.roles.assign') }}"
-                                              class="flex items-center gap-2">
+                                            class="flex items-center gap-2">
 
                                             @csrf
 
                                             <input type="hidden" name="user_id" value="{{ $user->id }}">
 
                                             <select name="role"
-                                                    class="border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-indigo-200 focus:border-indigo-500">
+                                                class="border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-indigo-200 focus:border-indigo-500">
                                                 @foreach($roles as $role)
                                                     <option value="{{ $role->name }}">
                                                         {{ $role->title }}
@@ -90,7 +109,7 @@
                                             </select>
 
                                             <button type="submit"
-                                                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow">
+                                                class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow">
                                                 Save
                                             </button>
 
@@ -104,7 +123,9 @@
                         </tbody>
 
                     </table>
-
+                    <div class="p-4 border-t">
+                        {{ $users->links() }}
+                    </div>
                 </div>
 
             </div>

@@ -23,9 +23,34 @@
                 </div>
             @endif
 
+            <!-- Search Form -->
+            <form method="GET" action="{{ route('roles.index') }}" class="mb-4">
+                <div class="flex gap-2">
+
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Search role by name or title..."
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring focus:ring-indigo-200 focus:border-indigo-500">
+
+                    <button
+                        type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg">
+                        Search
+                    </button>
+
+                    <a href="{{ route('roles.index') }}"
+                       class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded-lg">
+                        Reset
+                    </a>
+
+                </div>
+            </form>
+
             <div class="bg-white shadow-md rounded-xl overflow-hidden">
 
-                <!-- Header Row -->
+                <!-- Header -->
                 <div class="px-6 py-4 border-b bg-gray-50">
                     <h3 class="text-lg font-semibold text-gray-700">
                         All Roles
@@ -49,6 +74,7 @@
                         <tbody class="divide-y divide-gray-200">
 
                             @forelse($roles as $role)
+
                                 <tr class="hover:bg-gray-50 transition">
 
                                     <td class="px-6 py-4 font-medium text-gray-700">
@@ -69,18 +95,19 @@
 
                                         <div class="flex justify-center gap-2">
 
-                                            <a href="{{ route('roles.edit',$role->id) }}"
+                                            <a href="{{ route('roles.edit', $role->id) }}"
                                                class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-md text-xs">
                                                 Edit
                                             </a>
 
                                             <form method="POST"
-                                                  action="{{ route('roles.destroy',$role->id) }}">
+                                                  action="{{ route('roles.destroy', $role->id) }}">
                                                 @csrf
                                                 @method('DELETE')
 
-                                                <button onclick="return confirm('Are you sure?')"
-                                                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs">
+                                                <button
+                                                    onclick="return confirm('Are you sure you want to delete this role?')"
+                                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs">
                                                     Delete
                                                 </button>
 
@@ -91,18 +118,26 @@
                                     </td>
 
                                 </tr>
+
                             @empty
+
                                 <tr>
                                     <td colspan="4" class="text-center py-10 text-gray-500">
-                                        No roles found
+                                        No roles found.
                                     </td>
                                 </tr>
+
                             @endforelse
 
                         </tbody>
 
                     </table>
 
+                </div>
+
+                <!-- Pagination -->
+                <div class="p-4 border-t">
+                    {{ $roles->links() }}
                 </div>
 
             </div>

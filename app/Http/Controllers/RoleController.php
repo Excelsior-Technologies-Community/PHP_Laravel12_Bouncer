@@ -7,10 +7,18 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class RoleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $roles = Bouncer::role()->get();
-        return view('roles.index', compact('roles'));
+        $search = $request->search;
+
+        $roles = Bouncer::role()
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('title', 'like', "%{$search}%");
+            })
+            ->paginate(4);
+
+        return view('roles.index', compact('roles', 'search'));
     }
 
     public function create()

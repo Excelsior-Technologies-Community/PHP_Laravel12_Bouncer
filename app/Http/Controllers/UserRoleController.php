@@ -8,12 +8,25 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class UserRoleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        $search = $request->search;
+
+        $users = User::with('roles')
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhereHas('roles', function ($roleQuery) use ($search) {
+                        $roleQuery->where('name', 'like', "%{$search}%")
+                            ->orWhere('title', 'like', "%{$search}%");
+                    });
+            })
+            ->paginate(4)
+            ->withQueryString();
+
         $roles = Bouncer::role()->get();
 
-        return view('user_roles.index', compact('users','roles'));
+        return view('user_roles.index', compact('users', 'roles', 'search'));
     }
 
     public function assign(Request $request)
@@ -27,6 +40,6 @@ class UserRoleController extends Controller
 
         Bouncer::sync($user)->roles([$request->role]);
 
-        return back()->with('success','Role assigned successfully');
+        return back()->with('success', 'Role assigned successfully');
     }
 }
